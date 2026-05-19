@@ -10,8 +10,7 @@ conn = psycopg2.connect(os.getenv("DATABASE_URL"))
 cursor = conn.cursor()
 
 # --- Swap in any query from the Query Reference section ---
-cursor.execute("SELECT c.company_name, SUM(i.total_amount) AS total_billed FROM invoice i JOIN customer c ON i.customer_id = c.customer_id GROUP BY c.company_name ORDER BY total_billed DESC;")
-
+cursor.execute("SELECT c.company_name, i.invoice_id, i.due_date, i.total_amount, i.status FROM invoice i JOIN customer c ON i.customer_id = c.customer_id WHERE i.status IN ('Unpaid','Overdue') ORDER BY i.due_date;")
 # Fetch and print every row returned
 rows = cursor.fetchall()
 for row in rows:
